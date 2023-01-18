@@ -18,6 +18,14 @@ state = {
     filter: '',
   }
 
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+    if (parsedContacts) {
+    this.setState({ contacts: parsedContacts });
+    }
+}
+
     formSubmit = ({ name, number }) => {
     const contact = {
       id: nanoid(),
@@ -36,6 +44,12 @@ state = {
       toast.success('New contact successfully added');
   };
 
+  componentDidUpdate(prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
     filterInput = event => {
     this.setState({ filter: event.target.value });
   };
@@ -52,6 +66,10 @@ state = {
       contacts: prevState.contacts.filter(contact => contact.id !== id),
     }));
   };
+
+  componentWillUnmount() {
+    this.deleteContact()
+  }
 
     render() {
        
